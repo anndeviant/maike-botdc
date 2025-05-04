@@ -37,7 +37,7 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "judul") {
-      const query = interaction.options.getString("query");
+      const query = interaction.options.getString("judul");
       await interaction.reply(`🔍 Mencari anime: **${query}**...`);
 
       try {
