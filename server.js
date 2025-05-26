@@ -17,7 +17,7 @@ function createHealthServer(client) {
     }
   });
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT;
   server.listen(PORT, () => {
     console.log(`🌐 HTTP server running on port ${PORT}`);
   });
