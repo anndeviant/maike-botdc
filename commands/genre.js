@@ -27,8 +27,8 @@ const genres = [
   { name: "Space", id: 29 },
   { name: "Super Power", id: 31 },
   { name: "Survival", id: 76 },
-  { name: "Shounen", id: 27 }
-]
+  { name: "Shounen", id: 27 },
+];
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -65,7 +65,9 @@ module.exports = {
       const totalPages = firstPage.data.pagination.last_visible_page;
 
       if (!totalPages || totalPages < 1) {
-        await interaction.editReply("❌ Tidak ada anime ditemukan untuk genre ini.");
+        await interaction.editReply(
+          "❌ Tidak ada anime ditemukan untuk genre ini."
+        );
         return;
       }
 
@@ -85,18 +87,27 @@ module.exports = {
         new EmbedBuilder()
           .setTitle(anime.title)
           .setURL(anime.url)
-          .setDescription(anime.synopsis?.slice(0, 200) + "..." || "Tidak ada sinopsis.")
+          .setDescription(
+            anime.synopsis?.slice(0, 200) + "..." || "Tidak ada sinopsis."
+          )
           .setImage(anime.images.jpg.image_url)
           .addFields(
-            { name: "Rating", value: anime.score?.toString() || "N/A", inline: true },
-            { name: "Episodes", value: anime.episodes?.toString() || "N/A", inline: true },
+            {
+              name: "Rating",
+              value: anime.score?.toString() || "N/A",
+              inline: true,
+            },
+            {
+              name: "Episodes",
+              value: anime.episodes?.toString() || "N/A",
+              inline: true,
+            },
             { name: "Status", value: anime.status || "N/A", inline: true }
           )
           .setFooter({ text: "Sumber: MyAnimeList via Jikan.moe" })
       );
 
       await interaction.editReply({ content: "", embeds });
-
     } catch (error) {
       console.error(error);
       await interaction.editReply("❌ Gagal mengambil data dari Jikan API.");

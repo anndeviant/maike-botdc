@@ -8,7 +8,7 @@ const {
 } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
-const axios = require("axios");
+const { createHealthServer } = require("./server");
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.CLIENT_ID;
@@ -17,15 +17,9 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
-// Create commands directory if it doesn't exist
-const commandsPath = path.join(__dirname, "commands");
-if (!fs.existsSync(commandsPath)) {
-  console.log("Creating commands directory...");
-  fs.mkdirSync(commandsPath);
-}
-
 // Load commands
 client.commands = new Collection();
+const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js"));
@@ -68,9 +62,15 @@ const rest = new REST({ version: "10" }).setToken(token);
   }
 })();
 
+// Create HTTP server for Cloud Run health checks
+let healthServer;
+
 // Bot logic
 client.on("ready", () => {
   console.log(`🤖 Bot logged in as ${client.user.tag}`);
+
+  // Start health server after bot is ready
+  healthServer = createHealthServer(client);
 });
 
 client.on("interactionCreate", async (interaction) => {
